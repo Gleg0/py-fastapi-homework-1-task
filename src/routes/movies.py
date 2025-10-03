@@ -4,7 +4,6 @@ from sqlalchemy.future import select
 from sqlalchemy import func
 from typing import Optional
 
-from config.settings import api_version_prefix
 from database.models import MovieModel
 from database.session import get_db
 from schemas.movies import MovieDetailResponseSchema, MovieListResponseSchema
