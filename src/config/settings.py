@@ -3,8 +3,6 @@ from pathlib import Path
 
 from pydantic_settings import BaseSettings
 
-api_version_prefix = "/api/v1"
-
 
 class Settings(BaseSettings):
     BASE_DIR: Path = Path(__file__).parent.parent

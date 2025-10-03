@@ -32,7 +32,7 @@ async def get_movies(
     if not movies:
         raise HTTPException(status_code=404, detail="No movies found.")
 
-    base_url = f"{api_version_prefix}/theater/movies/"
+    base_url = "/theater/movies/"
     prev_page: Optional[str] = None
     next_page: Optional[str] = None
 
