@@ -6,6 +6,7 @@ from typing import Optional
 
 from database.models import MovieModel
 from database.session import get_db
+from main import api_version_prefix
 from schemas.movies import MovieDetailResponseSchema, MovieListResponseSchema
 
 router = APIRouter(prefix="/movies", tags=["Movies"])
@@ -24,13 +25,14 @@ async def get_movies(
     total_pages = (total_items + per_page - 1) // per_page
 
     offset = (page - 1) * per_page
-    result = await db.execute(select(MovieModel).offset(offset).limit(per_page))
+    stmt = select(MovieModel).order_by(MovieModel.id).offset(offset).limit(per_page)
+    result = await db.execute(stmt)
     movies = result.scalars().all()
 
     if not movies:
         raise HTTPException(status_code=404, detail="No movies found.")
 
-    base_url = "/theater/movies/"
+    base_url = f"{api_version_prefix}/theater/movies/"
     prev_page: Optional[str] = None
     next_page: Optional[str] = None
 
@@ -50,7 +52,8 @@ async def get_movies(
 
 @router.get("/{movie_id}/", response_model=MovieDetailResponseSchema)
 async def get_movie(movie_id: int, db: AsyncSession = Depends(get_db)):
-    result = await db.execute(select(MovieModel).filter(MovieModel.id == movie_id))
+    stmt = select(MovieModel).where(MovieModel.id == movie_id)
+    result = await db.execute(stmt)
     movie = result.scalars().first()
 
     if not movie:
